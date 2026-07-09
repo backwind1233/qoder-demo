@@ -13,9 +13,10 @@
     out.textContent = "Requesting " + ASSET + " ...";
 
     try {
-      // Cache-bust the browser cache so the request actually reaches the CDN.
-      const url = ASSET + "?t=" + Date.now();
-      const res = await fetch(url, { cache: "no-store" });
+      // Use a STABLE url (no cache-busting query string) so Cloudflare can match
+      // its cache entry and return HIT. `cache: "no-store"` bypasses the browser's
+      // own HTTP cache and forces a real network request to the CDN edge.
+      const res = await fetch(ASSET, { cache: "no-store" });
 
       const headers = ["cf-cache-status", "age", "cache-control", "cf-ray", "server", "content-type"];
       const lines = ["HTTP " + res.status + " " + res.statusText, ""];
